@@ -1,6 +1,70 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+// User agent parsing function
+function parseUserAgent(userAgent: string) {
+  const ua = userAgent.toLowerCase();
+  
+  // Browser detection
+  let browser = 'Unknown';
+  if (ua.includes('chrome') && !ua.includes('edg')) browser = 'Chrome';
+  else if (ua.includes('firefox')) browser = 'Firefox';
+  else if (ua.includes('safari') && !ua.includes('chrome')) browser = 'Safari';
+  else if (ua.includes('edg')) browser = 'Edge';
+  else if (ua.includes('opera')) browser = 'Opera';
+  
+  // OS detection
+  let os = 'Unknown';
+  if (ua.includes('windows')) os = 'Windows';
+  else if (ua.includes('mac os')) os = 'macOS';
+  else if (ua.includes('linux')) os = 'Linux';
+  else if (ua.includes('android')) os = 'Android';
+  else if (ua.includes('ios') || ua.includes('iphone') || ua.includes('ipad')) os = 'iOS';
+  
+  // Device type detection
+  let deviceType = 'Desktop';
+  if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) deviceType = 'Mobile';
+  else if (ua.includes('tablet') || ua.includes('ipad')) deviceType = 'Tablet';
+  
+  return { browser, os, deviceType };
+}
+
+// Geolocation function (using a free service)
+async function getGeolocation(ip: string) {
+  try {
+    // Using ipapi.co (free tier: 1000 requests/day)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    
+    const response = await fetch(`https://ipapi.co/${ip}/json/`, {
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) {
+      throw new Error('Geolocation service unavailable');
+    }
+    
+    const data = await response.json();
+    
+    return {
+      country: data.country_name || 'Unknown',
+      region: data.region || 'Unknown',
+      city: data.city || 'Unknown',
+      asn: data.org || 'Unknown'
+    };
+  } catch (error) {
+    console.log('Geolocation failed:', error);
+    return {
+      country: 'Unknown',
+      region: 'Unknown',
+      city: 'Unknown',
+      asn: 'Unknown'
+    };
+  }
+}
+
 // Simple in-memory rate limiting (for production, use Redis or similar)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
@@ -116,6 +180,14 @@ export async function POST(request: NextRequest) {
     
     console.log('Received data:', body);
     
+    // Get geolocation and user agent info
+    const userAgent = request.headers.get('user-agent') || 'Unknown';
+    const { browser, os, deviceType } = parseUserAgent(userAgent);
+    const { country, region, city, asn } = await getGeolocation(ip);
+    
+    console.log('Geolocation:', { country, region, city, asn });
+    console.log('Device info:', { browser, os, deviceType });
+    
     // Comprehensive validation
     if (!body.email || typeof body.email !== 'string') {
       return NextResponse.json(
@@ -217,9 +289,16 @@ export async function POST(request: NextRequest) {
           utm_source: body.utm_source || '',
           utm_campaign: body.utm_campaign || '',
           utm_ad: body.utm_ad || '',
-          ip_address: ip,
-          user_agent: request.headers.get('user-agent') || '',
-          honeypot: body.honeypot || ''
+          honeypot: body.honeypot || '',
+          // Geographic data
+          country: country,
+          region: region,
+          city: city,
+          asn: asn,
+          // Device data
+          browser: browser,
+          os: os,
+          device_type: deviceType
         }
       ])
       .select();

@@ -99,15 +99,23 @@ CREATE TABLE waitlist_submissions (
   utm_source TEXT,
   utm_campaign TEXT,
   utm_ad TEXT,
-  ip_address TEXT,
-  user_agent TEXT,
   honeypot TEXT,
+  -- Geographic data
+  country TEXT,
+  region TEXT,
+  city TEXT,
+  asn TEXT,
+  -- Device data
+  browser TEXT,
+  os TEXT,
+  device_type TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE INDEX idx_waitlist_submissions_email ON waitlist_submissions(email);
 CREATE INDEX idx_waitlist_submissions_created_at ON waitlist_submissions(created_at);
-CREATE INDEX idx_waitlist_submissions_ip_address ON waitlist_submissions(ip_address);
+CREATE INDEX idx_waitlist_submissions_country ON waitlist_submissions(country);
+CREATE INDEX idx_waitlist_submissions_device_type ON waitlist_submissions(device_type);
 
 ALTER TABLE waitlist_submissions ENABLE ROW LEVEL SECURITY;
 
@@ -122,6 +130,9 @@ CREATE POLICY "Allow insert for waitlist submissions" ON waitlist_submissions
 - **Input Validation**: Email format, field lengths, suspicious patterns
 - **Duplicate Prevention**: Same email within 1 hour
 - **Anti-Spam**: Content filtering and pattern detection
+- **Geographic Analysis**: Country, region, city tracking for fraud detection
+- **Device Fingerprinting**: Browser, OS, device type analysis
+- **ASN Tracking**: Internet service provider identification
 
 ## License
 
