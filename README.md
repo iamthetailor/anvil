@@ -1,15 +1,15 @@
-# AnvilWeb Landing Page
+# ANVIL - Manufacturing Platform Landing Page
 
-A modern, responsive landing page built with Next.js, React, and Tailwind CSS. Designed for easy deployment to Vercel.
+A modern, responsive landing page for ANVIL, a platform connecting buyers with US manufacturers. Built with Next.js, React, and Tailwind CSS.
 
 ## Features
 
 - ⚡ **Lightning Fast** - Built with Next.js for optimal performance
-- 🔒 **Secure** - Enterprise-grade security features
+- 🔒 **Secure** - Enterprise-grade anti-spam and security features
 - 📱 **Mobile First** - Responsive design for all devices
-- 🚀 **Scalable** - Built to handle millions of users
-- 🎨 **Beautiful UI** - Modern, clean design
-- ⚙️ **Easy Deploy** - One-click deployment to Vercel
+- 🎨 **Beautiful UI** - Modern, clean design with dark/light mode
+- 🛡️ **Anti-Spam Protection** - Advanced bot detection and rate limiting
+- 📊 **Analytics Ready** - Integrated with Supabase for data collection
 
 ## Getting Started
 
@@ -50,32 +50,78 @@ npm start
 - **Framework**: Next.js 14
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
+- **Database**: Supabase
 - **Deployment**: Vercel
 
 ## Project Structure
 
 ```
-├── app/                 # Next.js app directory
-│   ├── globals.css     # Global styles
-│   ├── layout.tsx      # Root layout
-│   └── page.tsx        # Home page
-├── components/         # React components
-│   ├── Hero.tsx        # Hero section
-│   ├── Features.tsx    # Features section
-│   ├── CTA.tsx         # Call-to-action section
-│   └── Footer.tsx      # Footer component
-├── public/             # Static assets
+├── app/                    # Next.js app directory
+│   ├── api/               # API routes
+│   │   └── submit-form/   # Form submission endpoint
+│   ├── globals.css        # Global styles
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # Home page
+├── components/            # React components
+│   ├── Hero.tsx           # Hero section with form
+│   ├── Footer.tsx         # Footer component
+│   ├── Toggle.tsx         # Buyer/Manufacturer toggle
+│   ├── WaitlistForm.tsx   # Form component
+│   └── ThemeToggle.tsx    # Dark/Light mode toggle
+├── contexts/              # React contexts
+│   └── ThemeContext.tsx   # Theme management
+├── public/                # Static assets
+│   └── images/           # Logo and favicon
 └── ...config files
 ```
 
-## Customization
+## Environment Variables
 
-The landing page is fully customizable:
+Create a `.env.local` file with the following variables:
 
-1. **Content**: Edit the text in each component
-2. **Colors**: Modify the Tailwind classes in the components
-3. **Layout**: Adjust the component structure
-4. **Styling**: Update the CSS classes or add custom styles
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+```
+
+## Database Setup
+
+1. Create a Supabase project
+2. Run the following SQL in your Supabase SQL editor:
+
+```sql
+CREATE TABLE waitlist_submissions (
+  id BIGSERIAL PRIMARY KEY,
+  role TEXT,
+  email TEXT NOT NULL,
+  company TEXT,
+  expertise_looking_for TEXT,
+  utm_source TEXT,
+  utm_campaign TEXT,
+  utm_ad TEXT,
+  ip_address TEXT,
+  user_agent TEXT,
+  honeypot TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_waitlist_submissions_email ON waitlist_submissions(email);
+CREATE INDEX idx_waitlist_submissions_created_at ON waitlist_submissions(created_at);
+CREATE INDEX idx_waitlist_submissions_ip_address ON waitlist_submissions(ip_address);
+
+ALTER TABLE waitlist_submissions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow insert for waitlist submissions" ON waitlist_submissions
+  FOR INSERT WITH CHECK (true);
+```
+
+## Security Features
+
+- **Rate Limiting**: 5 requests per 15 minutes per IP
+- **Honeypot Protection**: Hidden fields to catch bots
+- **Input Validation**: Email format, field lengths, suspicious patterns
+- **Duplicate Prevention**: Same email within 1 hour
+- **Anti-Spam**: Content filtering and pattern detection
 
 ## License
 
