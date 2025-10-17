@@ -78,12 +78,12 @@ export default function Hero({ isBuyer, onToggle }: HeroProps) {
             {/* Main Title */}
             <div className="mb-8">
               <h1 className="text-3xl lg:text-4xl font-sleek-bold text-[var(--text-primary)] mb-4 leading-tight theme-transition">
-                {isBuyer ? 'Find Your Perfect US Manufacturer' : 'Connect US Manufacturers with Buyers Worldwide'}
+                {isBuyer ? 'Find Your Next US Manufacturing Partner' : 'Connect with Buyers Seeking US Manufacturing'}
               </h1>
               <p className="text-[var(--text-secondary)] text-lg leading-relaxed font-sleek theme-transition">
                 {isBuyer 
-                  ? 'Join our platform to discover verified US manufacturers who can bring your ideas to life with quality and reliability.'
-                  : 'Showcase your manufacturing capabilities to buyers worldwide and grow your business through our trusted network.'
+                  ? 'Connect with verified US manufacturers who deliver quality, reliability, and local support. Skip the endless search and join our waitlist for early access.'
+                  : 'Connect with buyers who prioritize quality, reliability, and US manufacturing partnerships. Join our waitlist to be first in line when we launch.'
                 }
               </p>
             </div>
