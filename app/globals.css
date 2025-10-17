@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --orange-primary: #ff6b35;
+  --orange-light: #ff8c69;
+  --orange-dark: #e55a2b;
+  --accent-green: #00ff88;
+  --accent-green-glow: rgba(0, 255, 136, 0.3);
+}
+
+:root.dark {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --bg-surface: #2a2a2a;
+  --bg-panel: #1a1a1a;
+  --border-primary: #3a3a3a;
+  --border-secondary: #4a4a4a;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-muted: #666666;
+  --text-inverse: #000000;
+}
+
+:root.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-surface: #ffffff;
+  --bg-panel: #f1f3f4;
+  --border-primary: #e1e5e9;
+  --border-secondary: #d1d5db;
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --text-inverse: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+body {
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .gradient-orange {
+    background: linear-gradient(135deg, var(--orange-primary) 0%, var(--orange-light) 100%);
+  }
+  
+  .text-gradient-orange {
+    background: linear-gradient(135deg, var(--orange-primary) 0%, var(--orange-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .glow-green {
+    box-shadow: 0 0 20px var(--accent-green-glow);
+  }
+  
+  .border-glow-green {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 10px var(--accent-green-glow);
+  }
+  
+  .font-sleek {
+    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+  
+  .font-sleek-bold {
+    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  
+  .font-sleek-light {
+    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+  }
+  
+  .form-input:focus {
+    outline: none !important;
+    border-color: #ff6b35 !important;
+    box-shadow: 0 0 0 1px #ff6b35, 0 0 20px rgba(255, 107, 53, 0.25) !important;
+  }
+  
+  .theme-transition {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+}
