@@ -110,6 +110,17 @@ export default function WaitlistForm({ isBuyer }: WaitlistFormProps) {
       
       if (result.success) {
         console.log('Successfully submitted to Supabase:', formData);
+        
+        // Track Meta Lead event
+        if (typeof window !== 'undefined' && (window as any).fbq) {
+          (window as any).fbq('track', 'Lead', {
+            content_name: isBuyer ? 'Buyer Waitlist Signup' : 'Manufacturer Waitlist Signup',
+            content_category: 'Waitlist',
+            value: 0,
+            currency: 'USD'
+          });
+        }
+        
         setIsSubmitted(true);
       } else {
         console.error('Error submitting to Supabase:', result.error);
